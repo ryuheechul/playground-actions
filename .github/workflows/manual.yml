@@ -43,8 +43,8 @@ jobs:
       uses: github-actions-x/commit@v2.8
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: 'publish'
-        name: update example.yaml
+        commit-message: 'update example.yaml'
+        name: friendly-bot
     - name: file Pull Request
       uses: repo-sync/pull-request@master
       with:
