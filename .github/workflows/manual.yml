@@ -27,7 +27,7 @@ jobs:
     steps:
     # Runs a single command using the runners shell
     - name: acknowledge
-      run: echo "value: ${{ github.event.inputs.value }}"
+      run: echo "value is ${{ github.event.inputs.value }}"
     - name: Checkout
       uses: actions/checkout@v2.4.0
     - name: process yaml with new value
