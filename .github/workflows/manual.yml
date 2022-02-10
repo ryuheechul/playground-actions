@@ -1,6 +1,6 @@
 # This is a basic workflow that is manually triggered
 
-name: Manual workflow
+name: Create PR with a change workflow
 
 # Controls when the action will run. Workflow runs when manually triggered using the UI
 # or API.
@@ -19,33 +19,33 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "greet"
-  greet:
+  change-request:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Runs a single command using the runners shell
-    - name: Send greeting
-      run: echo "Hello ${{ github.event.inputs.value }}"
+    - name: acknowledge
+      run: echo "value: ${{ github.event.inputs.value }}"
     - name: Checkout
       uses: actions/checkout@v2.4.0
-    - name: yq - portable yaml processor
+    - name: process yaml with new value
       # You may pin to the exact commit or the version.
       # uses: mikefarah/yq@926a68181ba83ca29fb6bac566fd443e212228ed
       uses: mikefarah/yq@v4.19.1
       with:
         # The Command which should be run
         cmd: yq -i '.a = "${{ github.event.inputs.value }}"' example.yaml
-    - name: Cat result
+    - name: print result
       run: cat example.yaml
-    - name: push
+    - name: commit and push
       uses: github-actions-x/commit@v2.8
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         commit-message: 'publish'
         name: update example.yaml
-    - name: Github Pull Request
+    - name: file Pull Request
       uses: repo-sync/pull-request@master
       with:
         destination_branch: "main"
