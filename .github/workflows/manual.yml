@@ -34,31 +34,34 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Runs a single command using the runners shell
-    - name: acknowledge
+    - name: Acknowledge
       run: echo "value is ${{ github.event.inputs.value }}"
     - name: Checkout
       uses: actions/checkout@v2.4.0
       with:
         ref: '${{ github.event.inputs.source-branch }}'
-    - run: git checkout -b '${{ github.event.inputs.new-branch }}'
-    - name: process yaml with new value
+    - name: Create New Branch
+      run: git checkout -b '${{ github.event.inputs.new-branch }}'
+    - name: Process YAML with New Value
       # You may pin to the exact commit or the version.
       # uses: mikefarah/yq@926a68181ba83ca29fb6bac566fd443e212228ed
       uses: mikefarah/yq@v4.19.1
       with:
         # The Command which should be run
         cmd: yq -i '.a = "${{ github.event.inputs.value }}"' example.yaml
-    - name: print result
+    - name: Print Result
       run: cat example.yaml
     - name: commit and push
       uses: github-actions-x/commit@v2.8
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         commit-message: 'update example.yaml'
+        push-branch: '${{ github.event.inputs.new-branch }}'
         name: friendly-bot
-    - name: file Pull Request
+    - name: File Pull Request
       uses: repo-sync/pull-request@master
       with:
+        source_branch: '${{ github.event.inputs.new-branch }}'
         destination_branch: '${{ github.event.inputs.source-branch }}'
         github_token: ${{ secrets.GITHUB_TOKEN }}
         pr_title: "New change for example.yaml"
