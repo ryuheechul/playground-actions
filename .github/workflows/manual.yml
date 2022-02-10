@@ -40,7 +40,6 @@ jobs:
       uses: actions/checkout@v2.4.0
       with:
         ref: '${{ github.event.inputs.source-branch }}'
-    - name: New branch
       run: git checkout -b '${{ github.event.inputs.new-branch }}'
     - name: process yaml with new value
       # You may pin to the exact commit or the version.
