@@ -50,3 +50,5 @@ jobs:
       with:
         destination_branch: "main"
         github_token: ${{ secrets.GITHUB_TOKEN }}
+        pr_title: "New change for example.yaml"
+        pr_body: ":crown: *An automated PR*"
