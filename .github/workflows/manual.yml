@@ -41,3 +41,6 @@ jobs:
       run: cat example.yaml
     - name: Github Pull Request
       uses: repo-sync/pull-request@master
+      with:
+        destination_branch: "main"
+        github_token: ${{ secrets.GITHUB_TOKEN }}
