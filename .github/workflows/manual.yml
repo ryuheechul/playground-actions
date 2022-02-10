@@ -36,4 +36,6 @@ jobs:
       uses: mikefarah/yq@v4.19.1
       with:
         # The Command which should be run
-        cmd: yq example.yaml
+        cmd: yq -i '.a = ${{ github.event.inputs.value }}' example.yaml
+    - name: Cat result
+      run: cat example.yaml
