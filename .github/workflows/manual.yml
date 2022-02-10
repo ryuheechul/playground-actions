@@ -39,3 +39,5 @@ jobs:
         cmd: yq -i '.a = "${{ github.event.inputs.value }}"' example.yaml
     - name: Cat result
       run: cat example.yaml
+    - name: Github Pull Request
+      uses: repo-sync/pull-request@master
