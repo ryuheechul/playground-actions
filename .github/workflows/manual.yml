@@ -17,7 +17,7 @@ on:
         required: true
       source-branch:
         description: 'a source branch where the new branch will come from'
-        default: '${{ github.ref }}'
+        default: 'main'
         required: true
       new-branch:
         description: 'new branch name'
