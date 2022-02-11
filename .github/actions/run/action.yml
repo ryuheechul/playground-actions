@@ -1,0 +1,31 @@
+# The whole point of this action is just to be a "generic" action to any local dockerfile
+# why not just `uses: docker://local/playground-actions/run` after building image
+# becuase github action always try to pull docker image before any steps so that won't work
+# then why not pushing image to remote repository first?
+# (it's an answer but also a question) why I would want that when I don't have to?
+# so this is the best compromise I have come up with so far
+name: 'run'
+description: "I just want to run with ./Dockerfile and that's all"
+inputs:
+  # example multi-line usage
+  # run: >
+  #   cd dir
+  #   &&
+  #   pwd
+  run:
+    description: "one line of commands"
+    required: true
+    default: ''
+outputs:
+  result:
+    description: 'Hopefully I can show you the results'
+runs:
+  using: 'docker'
+  # image: Dockerfile # this should work except it won't for my job
+  #                   # because we need to use buildx
+  #
+  # therefore I do this hack below
+  # this means the image must be built before this action is being used
+  image: 'local/playground-actions/run'
+  args:
+    - ${{ inputs.run }}

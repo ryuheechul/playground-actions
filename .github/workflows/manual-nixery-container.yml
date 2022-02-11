@@ -1,0 +1,48 @@
+# This is a basic workflow that is manually triggered
+
+name: using nixery container
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      value:
+        description: 'random input'
+        default: 'new value'
+        required: true
+
+jobs:
+  nixery:
+    runs-on: ubuntu-latest
+    # you could do this to avoid verbose `with: args:` with `docker://nixery.dev/...`
+    # but this will break all other container based steps
+    # container:
+    #   image: nixery.dev/coreutils/bash/kustomize/yq-go
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2.4.0
+    # - name: Create New Branch
+    #   run: git checkout -b '${{ github.event.inputs.new-branch }}'
+    - name: check yq version
+      uses: docker://nixery.dev/coreutils/bash/kustomize/yq-go/tree
+      with:
+        # you might notice the version might be different than your local nix installed yq-go
+        # why? because of https://github.com/tazjin/nixery/blob/master/nixpkgs-pin.nix#L2
+        # so that's the down side of relying on nixery.dev that pinning the channel version requires updating the upstream
+        args: yq --version
+    - name: template
+      uses: docker://nixery.dev/coreutils/bash/kustomize/yq-go/tree
+      with:
+        # because of the version difference, now the script works differently and fails as of today
+        # even though it work fine with latest yq-go on local machine
+        args: /bin/bash -c "cd kustomize/example && ../templates/add-namespace.sh a.yaml a"
+    - name: print
+      uses: docker://nixery.dev/coreutils/bash/kustomize/yq-go/tree
+      with:
+        args: /bin/bash -c "cd kustomize/example && kustomize build"
+    # my conclusion:
+    # - creating a local Dockerfile with installing exact version of each dependant binaries will be ideal and most reliable
+    # - nixery.dev would be only useful if the package you are relying on doesn't look it's going to break the (CLI) API anytime soon
+    # - above is of course not guaranteed

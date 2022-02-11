@@ -1,0 +1,102 @@
+# This is a workflow that is manually triggered
+name: kustomize templating
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      value:
+        description: 'a value that will replace the content in yaml'
+        default: 'new value'
+        required: true
+
+jobs:
+  template:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2.4.0
+    ## some how this will give you an error below
+    ## "Unable to find image 'local/playground-actions/run:latest' locally"
+    ## in this complexity of this particular job
+    ## so don't use it
+    # - name: Set up Docker Buildx
+    #   uses: docker/setup-buildx-action@v1
+    #   with:
+    #     install: true
+    - name: build docker image to run the meat
+      working-directory: .github/actions/run
+      run: make build
+    # unfortunately act use its own naming for the image so this is required
+    # otherwise act will not build again for new updated source code when the image already exists
+    - name: build docker image to run the meat
+      # but only if it's running by act
+      if: ${{ env.ACT }}
+      working-directory: .github/actions/run
+      run: make build-for-act
+    - name: Debug
+      uses: ./.github/actions/run
+      with:
+        run: echo "hello world"
+    ## below commented block only works with `act` not at Github actions
+    ## due to the pulling image is a necessary pre step
+    ## and obviously there is no such image name in docker hub
+    # - name: build docker image to run the meat
+    #   if: ${{ env.ACT }}
+    #   working-directory: .github/actions/run
+    #   run: make build
+    # - name: debug
+    #   if: ${{ env.ACT }}
+    #   uses: docker://local/playground-actions
+    #   with:
+    #     # because ENTRYPOINT in dockerfile is somehow being ignored
+    #     entrypoint: bash -c
+    #     # use `>` to combine these as one line
+    #     # envelop with '' to all of them to be as one arg for `bash -c'
+    #     # this is yet the best way that I found to resemble the style of multi-line `run:`
+    #     # in case of without `uses:`
+    #     args: >
+    #       '
+    #       cd kustomize/example
+    #       &&
+    #       pwd
+    #       &&
+    #       ls .
+    #       '
+    - name: template a.yaml
+      uses: ./.github/actions/run
+      with:
+        run: >-
+          cd kustomize/example
+          &&
+          ../.templates/add-namespace.sh a.yaml "${{ github.event.inputs.value }}-for-a"
+    - name: template b.yaml
+      uses: ./.github/actions/run
+      with:
+        run: >-
+          cd kustomize/example
+          &&
+          ../.templates/add-namespace.sh b.yaml "${{ github.event.inputs.value }}-for-b"
+    - name: debug
+      uses: ./.github/actions/run
+      with:
+        run: >-
+          cd kustomize/example
+          &&
+          pwd
+          &&
+          cat *.yaml
+    - name: kustomize build
+      uses: ./.github/actions/run
+      with:
+        run: >-
+          cd kustomize/example
+          &&
+          kustomize build
+    # this doesn't work because of the lack of actual cluster is connected
+    # - name: kubectl apply dry run
+    #   uses: docker://local/playground-actions
+    #   with:
+    #     args: kustomize build | kubectl apply --dry-run=client -f -

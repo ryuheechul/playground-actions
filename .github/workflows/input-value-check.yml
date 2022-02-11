@@ -1,0 +1,30 @@
+# This is a workflow that is manually triggered
+name: kustomize templating
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      yes-no:
+        description: "to determine if it's yes or something else"
+        default: 'yes'
+        required: true
+
+jobs:
+  input-value-check:
+    runs-on: ubuntu-latest
+    steps:
+    - name: value to be consumed
+      id: calc-truefalse
+      run: |
+        result_in_truefalse="false"
+        test "${{ github.event.inputs.yes-no }}" == "yes" && result_in_truefalse="true"
+
+        echo -n "::set-output name=yes-no-result::"
+        echo "${result_in_truefalse}"
+    - name: conditional echo
+      run: |
+        echo 'given "${{ github.event.inputs.yes-no }}",'
+        echo 'the result is "${{ steps.calc-truefalse.outputs.yes-no-result }}"'
