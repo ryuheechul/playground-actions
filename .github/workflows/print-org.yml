@@ -1,0 +1,14 @@
+# This is a workflow that is manually triggered
+name: print org or owner name
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch: {}
+
+jobs:
+  print-org:
+    runs-on: ubuntu-latest
+    steps:
+    - name: print org
+      run: echo ${{ github.repository_owner }}

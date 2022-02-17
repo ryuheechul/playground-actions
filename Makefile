@@ -1,3 +1,7 @@
+.PHONY: print-org
+print-org:
+	act -j print-org
+
 .PHONY: uses-yq
 uses-yq:
 	act -j uses-yq
