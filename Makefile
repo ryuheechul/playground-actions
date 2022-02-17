@@ -1,3 +1,7 @@
+.PHONY: uses-yq
+uses-yq:
+	act -j uses-yq
+
 .PHONY: input-value-check
 input-value-check:
 	yq .act/events/input-value-check-default.yaml -o json \

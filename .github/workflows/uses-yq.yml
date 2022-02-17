@@ -12,19 +12,14 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2.4.0
+    - uses: chrisdickinson/setup-yq@latest
+      with:
+        yq-version: v4.20.1
     - name: simple yq
-      uses: mikefarah/yq@v4.20.1
-      with:
-        cmd: yq '.on' '.github/workflows/uses-yq.yml'
+      run: yq '.on' '.github/workflows/uses-yq.yml'
     - name: with script
-      uses: mikefarah/yq@v4.20.1
-      with:
-        cmd: .github/workflows/uses-yq/try-yq.sh
+      run: .github/workflows/uses-yq/try-yq.sh
     - name: with Makefile
-      uses: mikefarah/yq@v4.20.1
-      with:
-        cmd: cd .github/workflows/uses-yq && make try
+      run: cd .github/workflows/uses-yq && make try
     - name: with Makefile that calls another Makefile
-      uses: mikefarah/yq@v4.20.1
-      with:
-        cmd: make test-yq
+      run: make test-yq
