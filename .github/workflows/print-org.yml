@@ -12,3 +12,7 @@ jobs:
     steps:
     - name: print org
       run: echo ${{ github.repository_owner }}
+    - name: embed into env var
+      env:
+        my_var: ${{ github.repository_owner }}
+      run: echo "${my_var} from env"
