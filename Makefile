@@ -14,3 +14,7 @@ nixery:
 .PHONY: list
 list:
 	act workflow_dispatch -l
+
+.PHONY: test-yq
+test-yq:
+	cd .github/workflows/uses-yq && $(MAKE) try
