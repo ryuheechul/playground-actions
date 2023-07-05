@@ -4,11 +4,14 @@ VERSION 0.7
 
 build:
   FROM earthly/dind:alpine
+  ARG TARGETARCH
   ARG ENV_VAR_A
 
   WORKDIR /opt/earthly
 
   COPY ./docker-compose.for-earthly.yml .
+
+  RUN printenv TARGETARCH
 
   WITH DOCKER --pull busybox
     RUN --no-cache --secret ENV_VAR_SECRET \
