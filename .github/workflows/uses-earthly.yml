@@ -15,3 +15,6 @@ jobs:
       run: earthly --version
     - name: Run build
       run: make earthly
+      env:
+        ENV_VAR_A: ${{ vars.ENV_VAR_A }}
+        ENV_VAR_SECRET: ${{ vars.ENV_VAR_SECRET }}
