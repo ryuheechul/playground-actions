@@ -1,0 +1,9 @@
+# it's mean to be used for ./Earthfile and ./.github/workflows/uses-earthly.yml
+version: '3.8'
+services:
+  busybox:
+    # image will be built by ./Earthfile
+    image: busybox
+    environment:
+    - ENV_VAR_A
+    - ENV_VAR_SECRET

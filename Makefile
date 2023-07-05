@@ -26,3 +26,7 @@ list:
 .PHONY: test-yq
 test-yq:
 	cd .github/workflows/uses-yq && $(MAKE) try
+
+.PHONY: earthly
+earthly:
+	earthly --secret ENV_VAR_SECRET --allow-privileged +build --ENV_VAR_A=$(ENV_VAR_A)

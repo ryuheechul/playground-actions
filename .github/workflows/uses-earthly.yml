@@ -1,0 +1,17 @@
+name: uses earthly for heavy lifting instead of gh actions
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  uses-earthly:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_COLOR: 1
+    steps:
+    - uses: earthly/actions-setup@v1
+    - uses: actions/checkout@v2
+    - name: Earthly version
+      run: earthly --version
+    - name: Run build
+      run: make earthly
