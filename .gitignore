@@ -1,2 +1,7 @@
 .direnv
 .env
+
+# Devenv
+.devenv*
+devenv.local.nix
+
